@@ -7,24 +7,43 @@
 
 #include "rhymes.hpp"
 
-int main()
+void printText(vector<wordInfo> &result)
 {
-    rhymes r("./dict/cmudict-0.7b");
-    vector<vector<string>> phones = r.getPhonesOfText(THAT);
-
-    
-    for (auto it = phones.begin(); it != phones.end(); it++)
+    for (auto it = result.begin(); it != result.end(); it++)
     {
-        for (auto it2 = it->begin(); it2 != it->end(); it2++)
+        if (!strcmp(it->word.c_str(), "\n"))
+            cout << endl;
+
+        for (auto it2 = it->phones.begin(); it2 != it->phones.end(); it2++)
         {
             cout << *it2 << " ";
         }
-        if (it + 1 != phones.end())
-            cout << "| ";
-        else
-        cout << endl;
     }
 
+}
+
+int main()
+{
+    rhymes r("./dict/cmudict-0.7b");
+    r.getPhonesOfText(THAT);
+    vector<wordInfo> result = r.getWordInfoList();
+
+    for (auto it = result.begin(); it != result.end(); it++)
+    {
+        if (it->isWord)
+        {
+            for (auto it2 = it->phones.begin(); it2 != it->phones.end(); it2++)
+            {
+                cout << *it2 << " ";
+            }
+        }
+        else
+        {
+            cout << it->word;
+        }
+        cout << "|";
+
+    }
     
     return 0;
 }

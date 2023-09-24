@@ -22,6 +22,14 @@
 
 using namespace std;
 
+struct wordInfo
+{
+    string word;
+    string wordProcessed = "";
+    bool isWord;
+    vector<string> phones = vector<string> {};
+};
+
 class rhymes
 {
     private:
@@ -30,7 +38,8 @@ class rhymes
         bool dictCheck();
         map<string, vector<string>> dictMap;
         vector<string> getPhonesOfWord(const string &word);
-
+        void processText(const string &text);
+        vector<wordInfo> wordInfoList;
 
     public:
         rhymes();
@@ -38,7 +47,8 @@ class rhymes
         ~rhymes();
 
         void printDict();
-        vector<vector<string>> getPhonesOfText(const string &text);
+        void getPhonesOfText(const string &text);
+        vector<wordInfo> getWordInfoList();
 };
 
 rhymes::rhymes()
@@ -49,7 +59,7 @@ rhymes::rhymes()
 rhymes::rhymes(const string &dictPath)
 {
     dictToMap(dictPath);
-    cout << "Dictionary loaded." << endl;
+    //cout << "Dictionary loaded." << endl;
 }
 
 rhymes::~rhymes()
@@ -110,76 +120,65 @@ void rhymes::printDict()
 bool rhymes::dictCheck()
 {
     if (!dictMap.size())
+    {
+        cout << "Dictionary is empty." << endl;
         return false;
+    }
     return true;
+}
+
+vector<wordInfo> rhymes::getWordInfoList()
+{
+    return wordInfoList;
 }
 
 vector<string> rhymes::getPhonesOfWord(const string &word)
 {
-    string copy(word);
-    transform(copy.begin(), copy.end(), copy.begin(), ::toupper);
-
-    if (dictMap.find(copy) == dictMap.end())
+    if (dictMap.find(word) == dictMap.end())
     {
-        cout << "Word '" << word << "' not found" << endl;
+        cout << "Word " << word << " not found." << endl;
         return vector<string> {"NOT FOUND"};
     }
-
-    vector<string> phones = dictMap[copy];
+    vector<string> phones = dictMap[word];
     return phones;
 }
 
-/*
-vector<vector<string>> rhymes::getPhonesOfText(const string &text)
+void rhymes::processText(const string &text)
 {
-    vector<vector<string>> phonesText;
-    vector<string> phonesWord;
+    size_t i = 0, j;
 
-    istringstream iss(text);
-    stringbuf *p_buf = iss.rdbuf();
-
-    string word;
-
-    while (p_buf->sgetc())
+    while (text[i])
     {
-        cout << p_buf << endl;
-
-        if (p_buf->sgetc() == '\r')
+        wordInfo newWordInfo;
+        j = i;
+        if (isalpha(text[i]))
         {
-            phonesText.push_back(vector<string> {"\r"});
+            while (isalpha(text[j]))
+                j++;
+            newWordInfo.word = text.substr(i, j - i);
+            newWordInfo.wordProcessed = newWordInfo.word;
+            transform(newWordInfo.wordProcessed.begin(), newWordInfo.wordProcessed.end(), newWordInfo.wordProcessed.begin(), ::toupper);
+            newWordInfo.isWord = true;
         }
         else
         {
-            iss >> word;
-            cout << word << endl;
-            phonesWord = getPhonesOfWord(word);
-            phonesText.push_back(phonesWord);
+            while (!isalpha(text[j]))
+                j++;
+            newWordInfo.word = text.substr(i, j - i);
+            newWordInfo.isWord = false;
         }
-
-        word.clear();
+        wordInfoList.push_back(newWordInfo);
+        i += j - i;
     }
-
-    return phonesText;
 }
-*/
 
-vector<vector<string>> rhymes::getPhonesOfText(const string &text)
+void rhymes::getPhonesOfText(const string &text)
 {
-    vector<vector<string>> phonesText;
-    vector<string> phonesWord;
+    processText(text);
 
-    istringstream iss(text);
-
-    string word;
-
-    while (iss >> word)
-    {
-        phonesWord = getPhonesOfWord(word);
-        phonesText.push_back(phonesWord);
-    }
-    word.clear();//SEMBLERAIT QUE SEUL LE PREMIER MOT SOIT PRIS EN COMPTE
-
-    return phonesText;
+    for (auto it = wordInfoList.begin(); it != wordInfoList.end(); it++)
+        if (it->isWord)
+            it->phones = getPhonesOfWord(it->wordProcessed);
 }
 
 
