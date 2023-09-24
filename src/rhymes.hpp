@@ -17,6 +17,7 @@
 #include <vector>
 #include <iomanip>
 #include <unistd.h>
+#include <limits>
 
 #include "samples.hpp"
 
@@ -40,6 +41,7 @@ class rhymes
         vector<string> getPhonesOfWord(const string &word);
         void processText(const string &text);
         vector<wordInfo> wordInfoList;
+        int levenshteinDistance(const std::string& s1, const std::string& s2);
 
     public:
         rhymes();
@@ -132,12 +134,45 @@ vector<wordInfo> rhymes::getWordInfoList()
     return wordInfoList;
 }
 
+int rhymes::levenshteinDistance(const std::string& s1, const std::string& s2) {
+    int m = s1.length();
+    int n = s2.length();
+    
+    std::vector<std::vector<int>> dp(m + 1, std::vector<int>(n + 1, 0));
+    
+    for (int i = 0; i <= m; ++i) {
+        for (int j = 0; j <= n; ++j) {
+            if (i == 0) {
+                dp[i][j] = j;
+            } else if (j == 0) {
+                dp[i][j] = i;
+            } else if (s1[i - 1] == s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1];
+            } else {
+                dp[i][j] = 1 + std::min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]});
+            }
+        }
+    }
+    return dp[m][n];
+}
+
 vector<string> rhymes::getPhonesOfWord(const string &word)
 {
     if (dictMap.find(word) == dictMap.end())
     {
-        cout << "Word " << word << " not found." << endl;
-        return vector<string> {"NOT FOUND"};
+        int minDist = numeric_limits<int>::max();
+        map<string, vector<string>>::iterator closest;
+
+        for (auto it = dictMap.begin(); it != dictMap.end(); it++)
+        {
+            if (levenshteinDistance(word, it->first) <= minDist)
+            {
+                minDist = levenshteinDistance(word, it->first);
+                closest = it;
+            }
+        }
+        cout << "Word " << word << " not found. Did you mean " << closest->first << "?" << endl;
+        return closest->second;
     }
     vector<string> phones = dictMap[word];
     return phones;

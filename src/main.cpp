@@ -32,10 +32,11 @@ int main()
     {
         if (it->isWord)
         {
-            for (auto it2 = it->phones.begin(); it2 != it->phones.end(); it2++)
-            {
-                cout << *it2 << " ";
-            }
+            if (it->phones == vector<string> {"NOT FOUND"})
+                cout << it->word << " ";
+            else
+                for (auto it2 = it->phones.begin(); it2 != it->phones.end(); it2++)
+                    cout << *it2 << " ";
         }
         else
         {
