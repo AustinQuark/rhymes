@@ -1,2 +1,43 @@
-Composants atmmiques : String/Char
-0123456789 Pas pris en compte 
+Composants atomiques : String/Char
+0123456789 Pas pris en compte
+
+Poid = f(position) * f(alignement)
+
+III.2.1.1. Forme et qualité des rimes
+On parlera de rimes pauvres si l'homophonie porte sur un seul phonème (vocalique), de rime suffisante si elle porte sur deux phonèmes, de rime riche si elle porte sur trois phonèmes et plus.
+
+Rimes pauvres: un phonème
+genoux/roux, joie/flamboie, présent/frémissant, sceau/oiseau
+Rimes suffisantes: deux phonèmes
+défend/enfant, colombe/tombe, tour/amour, crânes/diaphanes
+Rimes riches: trois phonèmes et plus
+mandragore/fulgore, contemple/temple, cendre/descendre, universelle/ruisselle
+À partir de Ronsard, dans un souci d'équilibrage de la longueur des vers, on adopte pour principe de faire alterner régulièrement des rimes masculines (terminées par une voyelle prononcée, éventuellement suivie d'une consonne) et des rimes féminines (terminées par un e caduc non prononcé au-delà de la voyelle homophonique).
+
+Rimes masculines:
+propos/repos, séjour/jour, instruit/fruit, corps/morts, yeux/cieux, penchant/couchant, miel/ciel
+Rimes féminines:
+onde/monde, charmes/armes, innocence/absence, vie/envie, gloire/histoire, éternelle/elle, inspire/écrire, avoue/boue
+Les rimes sont la manifestation la plus concrète de la logique du vers à vers selon lequel un vers métrique ne vient jamais seul. Dès lors que le principe de l'alternance des rimes est posé, toute rime de fin de vers crée une structure d'attente double (retour de la rime de même genre, doublet de rimes de genre opposé).
+
+Dedans des Prez je vis une Dryade,
+Qui comme fleur s'assisoyt par les fleurs,
+Et mignotoyt un chappeau de couleurs,
+Eschevelée en simple verdugade
+
+Ronsard
+
+En revanche, même s'il existe des vers libres rimés, la rime n'y a pas de fonctionnalité, ni même de perceptibilité à l'écoute (ce qui établit bien le caractère typographique du vers libre: pour être reconnue la rime doit y être vue). En effet, dans le vers libre la rime ne vient surdéterminer aucun retour de forme. De fait, dans le vers libre, la rime a été généralement abandonnée ou mise sur le même plan que des jeux d'échos au sein du vers.
+
+Armorial d'anémie!
+Psautier d'automne!
+Offertoire de tout mon ciboire de bonheur et de génie,
+À cette hostie si féminine,
+Et si petite toux sèche maligne,
+Qu'on voit aux jours déserts, en inconnue,
+Sertie en de cendreuses toilettes qui sentent déjà l'hiver,
+Se fuir le long des cris surhumains de la Mer.
+
+Jules Laforgue
+
+Source : https://www.unige.ch/lettres/framo/enseignements/methodes/versification/vr032110.html

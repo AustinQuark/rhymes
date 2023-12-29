@@ -27,14 +27,16 @@ void rhymes::dictToMap(const string &dictPath)
 {
     wifstream dict;
 
+    //TODO : Refactor this for flexibility
     setlocale(LC_ALL,"");
     dict.open(dictPath);
     dict.imbue(locale(locale(), new codecvt_utf8<wchar_t,0x10ffff, consume_header>));
-    
-    wstring line, word;
+    //
 
     if (!dict.is_open())
         throw runtime_error("Error opening dictionary file.");
+
+    wstring line, word;
 
     while (getline(dict, line))
     {
@@ -115,6 +117,7 @@ vector<wstring> rhymes::getPhonesOfWord(const wstring &word)
                 closest = it;
             }
         }
+        //TODO : Ceci est de la pate pour boucher les trous, a revoir
         wcout << "Word " << word << " not found. Did you mean " << closest->first << "?" << endl;
         return closest->second;
     }
@@ -132,6 +135,9 @@ void rhymes::processText(const wstring &text)
     {
         wordInfo newWordInfo;
         j = i;
+        
+        //TODO : Refactor this for flexibilit
+        //j'suis || j' + suis => pas pris en compte  
         if (iswalpha(text[i]))
         {
             while (iswalpha(text[j]))
@@ -190,14 +196,14 @@ vector<vector<wstring>> rhymes::getGridPhones()
 
     return gridPhones;
 }
-
+//FAIRE UN GRADIENT DES CONCORDANCES DES PHONES -> SOMMETS = RIMES
+//CONCORDANCE DES PHONES
 void rhymes::getRhymes(const wstring &text)
 {
     processText(text);
     processPhonesOfText();
 
     vector<vector<wstring>> result = getGridPhones();
-    
     
     for (size_t i = 0; i < result.size(); i++)
     {
@@ -208,6 +214,7 @@ void rhymes::getRhymes(const wstring &text)
         cout << endl;
     }
 
+    /*
     for (size_t i = 0; i < wordInfoList.size(); i++)
     {
         if (wordInfoList[i].isWord)
@@ -220,5 +227,5 @@ void rhymes::getRhymes(const wstring &text)
             cout << endl;
         }
     }
-    
+    */
 }
