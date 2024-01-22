@@ -26,10 +26,12 @@ void printText(vector<wordInfo> &result)
 
 int main()
 {
-    rhymes r("include/cmudict_fr.txt"); // Use wide string literal for constructor argument
+    rhymes r("include/cmudict-0.7b"); // Use wide string literal for constructor argument
     //r.dictToMap("include/acronym-0.7b"); // Use wide string literal for function argument
     //r.dictToMap("include/cmudict-0.7b"); // Use wide string literal for function argument
-    r.getRhymes(LESRAM); // Use wide string literal for function argument
+    r.getRhymes(THAT); // Use wide string literal for function argument
     //r.printDict();
+    r.printToFile();
+
     return 0;
 }

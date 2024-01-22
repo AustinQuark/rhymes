@@ -25,6 +25,8 @@
 
 using namespace std;
 
+
+
 struct wordInfo
 {
     wstring word;
@@ -40,12 +42,17 @@ class rhymes
         vector<wordInfo> wordInfoList;
         map<wstring, vector<wstring>> dictMap;
         vector<vector<wstring>> gridPhones;
+        vector<vector<float>> gridScores;
+        vector<wstring> phonesList;
 
         void processText(const wstring &text);
         vector<wstring> getPhonesOfWord(const wstring &word);
         void processPhonesOfText();
         int levenshteinDistance(const std::wstring& s1, const std::wstring& s2);
         vector<vector<wstring>> getGridPhones();
+        void getGridScores();
+
+        
 
     public:
         rhymes();
@@ -56,6 +63,7 @@ class rhymes
         void printDict();
         vector<wordInfo> getWordInfoList();
         void getRhymes(const wstring &text);
+        void printToFile();
 
 };
 

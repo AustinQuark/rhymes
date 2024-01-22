@@ -156,11 +156,11 @@ macarons(2)  mm aa kk aa rr on zz
 -vous(2)  vv ou zz
 -y  ii
 a  aa
-a contrario  aa kk on tt rr aa rr yy au
-a fortiori  aa ff oo rr ss yy oo rr ii
-a minima  aa mm ii nn ii mm aa
-a posteriori  aa pp oo ss tt ai rr yy oo rr ii
-a priori  aa pp rr ii yy oo rr ii
+contrario  kk on tt rr aa rr yy au
+fortiori  ff oo rr ss yy oo rr ii
+minima  mm ii nn ii mm aa
+posteriori  pp oo ss tt ai rr yy oo rr ii
+priori  pp rr ii yy oo rr ii
 aadchit  aa aa dd ch ii
 aalto  aa aa ll tt au
 aaron  aa aa rr on
@@ -1495,9 +1495,8 @@ acéré  aa ss ai rr ei
 acérée  aa ss ai rr ei
 acérées  aa ss ai rr ei
 acérées(2)  aa ss ai rr ei zz
-ad  aa
-ad(2)  aa dd
-ad hoc  aa dd oo kk
+ad  aa dd
+hoc  oo kk
 ada  aa dd aa
 adage  aa dd aa jj
 adage(2)  aa dd aa jj ee
@@ -2233,10 +2232,8 @@ afh  aa ai ff aa ch
 afia  aa ff yy aa
 aficionados  aa ff ii ss yy oo nn aa dd au ss
 afin  aa ff in
-afin d'  aa ff in dd
-afin de  aa ff in dd ee
-afin qu'  aa ff in kk
-afin que  aa ff in kk ee
+qu'  kk
+que  kk ee
 aflak  aa ff ll aa kk
 afnor  aa ff nn oo rr
 afonso  aa ff on ss au
@@ -2781,8 +2778,7 @@ ain  in
 aine  ai nn
 aine(2)  ai nn ee
 ainsi  in ss ii
-ainsi qu'  in ss ii kk
-ainsi que  in ss ii kk ee
+ainsi in ss ii
 air  ai rr
 airain  ai rr in
 airbag  ai rr bb aa gg

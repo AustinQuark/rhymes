@@ -27,16 +27,14 @@ void rhymes::dictToMap(const string &dictPath)
 {
     wifstream dict;
 
-    //TODO : Refactor this for flexibility
     setlocale(LC_ALL,"");
     dict.open(dictPath);
     dict.imbue(locale(locale(), new codecvt_utf8<wchar_t,0x10ffff, consume_header>));
-    //
+    
+    wstring line, word;
 
     if (!dict.is_open())
         throw runtime_error("Error opening dictionary file.");
-
-    wstring line, word;
 
     while (getline(dict, line))
     {
@@ -53,6 +51,8 @@ void rhymes::dictToMap(const string &dictPath)
         while (iss >> phone) {
             transform(phone.begin(), phone.end(), phone.begin(), ::towupper);
             phones.push_back(phone);
+            if (find(phonesList.begin(), phonesList.end(), phone) == phonesList.end())
+                phonesList.push_back(phone);
         }
 
         dictMap.insert(pair<wstring, vector<wstring>>(word, phones));
@@ -117,7 +117,6 @@ vector<wstring> rhymes::getPhonesOfWord(const wstring &word)
                 closest = it;
             }
         }
-        //TODO : Ceci est de la pate pour boucher les trous, a revoir
         wcout << "Word " << word << " not found. Did you mean " << closest->first << "?" << endl;
         return closest->second;
     }
@@ -135,9 +134,6 @@ void rhymes::processText(const wstring &text)
     {
         wordInfo newWordInfo;
         j = i;
-        
-        //TODO : Refactor this for flexibilit
-        //j'suis || j' + suis => pas pris en compte  
         if (iswalpha(text[i]))
         {
             while (iswalpha(text[j]))
@@ -196,24 +192,100 @@ vector<vector<wstring>> rhymes::getGridPhones()
 
     return gridPhones;
 }
-//FAIRE UN GRADIENT DES CONCORDANCES DES PHONES -> SOMMETS = RIMES
-//CONCORDANCE DES PHONES
+
+void rhymes::getGridScores()
+{
+    float min = 0, max = 0;
+
+
+    for (size_t i = 0; i < gridPhones.size(); i++)
+    {
+        vector<float> scores;
+        for (size_t j = 0; j < gridPhones[i].size(); j++)
+        {
+            float score = 0;
+            for (size_t k = 0; k < gridPhones.size(); k++)
+            {
+                for (size_t l = 0; l < gridPhones[k].size(); l++)
+                {
+                    if (gridPhones[i][j] == gridPhones[k][l])
+                    {
+                        score += 1.0 / (abs((int)(i - k)) + abs((int)(j - l)) + 1);
+                        if (score < min) min = score;
+                        if (score > max) max = score;
+                    }
+
+                }
+            }
+            scores.push_back(score);
+        }
+        gridScores.push_back(scores);
+    }
+
+    for (auto it = gridScores.begin(); it != gridScores.end(); it++)
+    {
+        for (auto it2 = it->begin(); it2 != it->end(); it2++)
+        {
+            *it2 = (*it2 - min) / (max - min);
+        }
+    }
+}
+
+void rhymes::printToFile()
+{
+    wofstream outfile;
+    outfile.open("scores.txt");
+    for (size_t i = 0; i < gridScores.size(); i++)
+    {
+        for (size_t j = 0; j < gridScores[i].size(); j++)
+        {
+            outfile << gridScores[i][j] << " ";
+        }
+        outfile << endl;
+    }
+    outfile.close();
+    outfile.open("phones.txt");
+    for (size_t i = 0; i < gridPhones.size(); i++)
+    {
+        for (size_t j = 0; j < gridPhones[i].size(); j++)
+        {
+            outfile << gridPhones[i][j] << " ";
+        }
+        outfile << endl;
+    }
+    outfile.close();
+}
+
 void rhymes::getRhymes(const wstring &text)
 {
     processText(text);
     processPhonesOfText();
 
     vector<vector<wstring>> result = getGridPhones();
+
+    getGridScores();
     
+
     for (size_t i = 0; i < result.size(); i++)
     {
         for (size_t j = 0; j < result[i].size(); j++)
         {
-            wcout << setw(2) << result[i][j] << " ";
+            wcout << setw(4) << result[i][j] << " ";
         }
         cout << endl;
+        for (size_t j = 0; j < result[i].size(); j++)
+        {
+            wcout << setprecision(2) << fixed << gridScores[i][j] << " ";
+        }
+        cout << endl << endl;       
     }
 
+    /*
+    for (auto it = phonesList.begin(); it != phonesList.end(); it++)
+    {
+        wcout << *it << endl;
+    }
+    */
     /*
     for (size_t i = 0; i < wordInfoList.size(); i++)
     {
@@ -228,4 +300,5 @@ void rhymes::getRhymes(const wstring &text)
         }
     }
     */
+    
 }
