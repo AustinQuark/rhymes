@@ -1,2 +1,0 @@
-Composants atmmiques : String/Char
-0123456789 Pas pris en compte 
