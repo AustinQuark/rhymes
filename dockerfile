@@ -32,7 +32,7 @@ RUN git clone https://github.com/espeak-ng/espeak-ng.git /app/espeak-ng \
 # Set the working directory inside the container
 
 # Copy your C++ project files into the container
-COPY . .
+# COPY . .
 
 # Build your C++ project (Replace with your build commands)
 # RUN mkdir build \
