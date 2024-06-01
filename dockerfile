@@ -26,8 +26,7 @@ RUN git clone https://github.com/espeak-ng/espeak-ng.git /app/espeak-ng \
     && cd espeak-ng \
     && ./autogen.sh \
     && ./configure --prefix=/usr \
-    && make -j8 src/espeak-ng src/speak-ng \
-    && make 
+    && make
 
 # Set the working directory inside the container
 
