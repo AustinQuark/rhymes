@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 clap = { version = "4.1.2" }
-pyo3 = { version = "0.18.2", features = ["extension-module"] }
+pyo3 = { version = "0.22.2", features = ["extension-module"] }
 
 [build-dependencies]
-pyo3-build-config = { version = "0.18.2" }
+pyo3-build-config = { version = "0.22.2" }
