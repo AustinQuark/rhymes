@@ -1,0 +1,37 @@
+OUi
+BOnjour
+C'est
+Moi
+
+Ligne vide
+
+OUi bonjour auss
+
+Ligne vide
+
+OUi bonjour aussi
+
+1. Inter-Process Communication (IPC) Overhead:
+When you base your program on command-line output, the program must spawn a separate process to execute the command. This involves:
+Process creation: Creating a new process is computationally expensive.
+Context switching: The operating system must switch contexts between the parent process and the child process.
+IPC mechanisms: Capturing the output from a command requires mechanisms like pipes or files, which can add overhead.
+2. I/O Overhead:
+Reading from and writing to command-line output involves additional I/O operations compared to directly accessing a library. This includes:
+Data conversion: The output from a command is typically in text form, so it needs to be parsed and converted back to a usable format.
+I/O latency: Depending on the size of the output and the speed of the I/O system, this can introduce latency.
+3. Error Handling and Reliability:
+With command-line arguments, errors might be harder to handle and may introduce extra overhead for checking and managing those errors.
+Parsing and managing text output can be more error-prone than using a library's well-defined API.
+4. Performance Comparison:
+Library/Module Call: A direct library call is generally much faster because it stays within the same process, involves direct function calls, and has lower I/O overhead.
+Command-Line Execution: A command-line approach can be slower by a factor ranging from several milliseconds to even seconds, depending on the complexity of the command and the system's performance.
+5. Use Cases:
+Library/Module: Best for performance-critical applications where speed and efficiency are crucial.
+Command-Line: Useful for quick integrations, simple tasks, or where the command-line tool offers functionality not available in a library.
+Typical Slowdown Example:
+Suppose a direct function call takes 1ms. The equivalent command-line invocation could take 10ms to 100ms or more, depending on the factors mentioned above.
+Conclusion:
+Direct Library/Module: Almost always faster, typically by an order of magnitude or more.
+Command-Line: Easier to implement for simple tasks but introduces a significant performance hit, especially noticeable in high-frequency or performance-sensitive applications.
+The choice between using a command-line tool versus a direct library call depends on the specific needs of the application—balancing ease of use and flexibility against performance requirements.

@@ -1,7 +1,7 @@
 #!/bin/bash
 # create_lexicon.sh: generate lexicon file from a given word list file.
 
-help_message="usage: `basename $0` -w <input-words-list-file> [-l language]
+help_message="usage: `basename $0` -w <input-file> [-l language]
 
 Generate lexicon file from a given word list file.
 
