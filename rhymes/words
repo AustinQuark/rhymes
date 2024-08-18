@@ -1,17 +1,3 @@
-OUi
-BOnjour
-C'est
-Moi
-
-Ligne vide
-
-OUi bonjour auss
-
-Ligne vide
-
-OUi bonjour aussi
-
-1. Inter-Process Communication (IPC) Overhead:
 When you base your program on command-line output, the program must spawn a separate process to execute the command. This involves:
 Process creation: Creating a new process is computationally expensive.
 Context switching: The operating system must switch contexts between the parent process and the child process.
