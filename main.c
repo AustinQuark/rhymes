@@ -18,6 +18,7 @@ char *path = NULL;
 void* user_data;
 unsigned int *identifier;
 int phonememode_ipa_separator = 0x01 | (1 << 7); // IPA phoneme names with '-' as separator
+char *delimiters = " \t\n\r.,;:!?\"'()[]{}<>-";
 
 int main(int argc, char* argv[]) {
     char voicename[] = {"fr"}; // Set voice by its name
@@ -38,24 +39,47 @@ int main(int argc, char* argv[]) {
     //ESPEAK_API const char *espeak_TextToPhonemes(const void **textptr, int textmode, int phonememode);
     const char **grid_phonemes = malloc(sizeof(char*) * 100); // Replace 100 with the desired size of the phoneme buffer
     memset(grid_phonemes, 0, sizeof(char*) * 100);
-    const char ***tmp = malloc(sizeof(char**) * 100);
+    const char ***tmp = malloc(sizeof(char*) * 100);
     memset(tmp, 0, sizeof(char*) * 100);
-    uint8_t i = 0; 
+    uint8_t i = 0;
     while (textptr != NULL) {
         const char *phonemes = espeak_TextToPhonemes(&textptr, espeakCHARS_AUTO, phonememode_ipa_separator);
         printf("Phonemes: %s\n", phonemes);
         grid_phonemes[i] = malloc(sizeof(char) * strlen(phonemes) + 1);
         memset(grid_phonemes[i], 0, sizeof(char) * strlen(phonemes) + 1);
         strcpy(grid_phonemes[i], phonemes);
-        tmp[i] = strsplit(phonemes, ' ');
+        printf("A\n");
+        uint8_t j = 0;
+        char *str_cpy = strdup(phonemes);
+        tmp[i][j++] = strtok(str_cpy, delimiters);
+        printf("B\n");
+        while (tmp[i][j] = strtok(NULL, delimiters))
+        {
+            printf("C\n");
+           j++;
+        }
+        printf("B\n");
+        free(str_cpy);
+        printf("C\n");
         i++;
     }
+   
 
     i = -1;
     while (grid_phonemes[++i] != NULL) {
         write(1, grid_phonemes[i], strlen(grid_phonemes[i]));
     }
     write(1, "\n", 1);
+
+    i = -1;
+    uint8_t j = 0;
+    while (tmp[++i] != NULL) {
+        while (*tmp[i] != NULL) {
+            printf("__%s__", *tmp[i]);
+            j++;
+        }
+        printf("\n");
+    }
     
     
 
