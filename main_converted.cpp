@@ -6,21 +6,23 @@
 #include <regex>
 #include <fstream>
 #include <iomanip>
+#include <functional>
 #include "espeak-ng/speak_lib.h"
 
 using namespace std;
 
-struct s_cell_rhyme{
-    string word;
-    bool to_phonetize;
-    string phonemes;
-    u_int8_t line_index;
+struct    s_cell_rhyme{
+    string           word;
+    bool             to_phonetize;
+    vector<string>   phonemes;
+    u_int8_t         line_index;
     vector<u_int8_t> phonemes_index;
 } typedef t_cell_rhyme;
 
-struct s_vowels{
-    vector<string> symbols;
-    vector<bool> not_found;
+struct    s_vowels{
+    u_int32_t             code;
+    vector<string>        symbols;
+    vector<bool>          not_found;
     vector<array<int, 3>> pos;
     vector<array<int, 3>> dpos;
 } typedef t_vowels;
@@ -89,18 +91,74 @@ vector<string> split_text(const string& text) {
     return result;
 }
 
+vector<string> split_phonemes(const string& phonemes, t_vowels* vowels) {
+    vector<string> result;
+    string phones;
+    char * phonemes_ptr = (char*) phonemes.c_str();
+    size_t i = -1;
+    
+    while (phonemes_ptr[++i]) {
+        phones += phonemes_ptr[i];
+        
+
+
+        bool delimiterFound = false;
+        for (const string& symbol : vowels->symbols) {
+            if (phones == symbol) {
+                result.push_back(phones);
+                phones.clear();
+                delimiterFound = true;
+                break;
+            }
+        }=======
+        if (!delimiterFound) {
+            bool foundLongestDelimiter = false;
+            string longestDelimiter;
+            
+            for (const string& symbol : vowels->symbols) {
+                if (symbol.size() > phoneme.size() && symbol.substr(0, phoneme.size()) == phoneme) {
+                    longestDelimiter = symbol;
+                    foundLongestDelimiter = true;
+                }
+            }
+            if (foundLongestDelimiter) {
+                continue;
+            }
+        }
+        if (!phoneme.empty() && delimiterFound) {
+            result.push_back(phoneme);
+            phoneme.clear();
+        } else if (c == '\'') {
+            if (!phoneme.empty() && phoneme.back() != '\'') {
+                phoneme += c;
+            }
+        }
+    }
+    
+    if (!phoneme.empty()) {
+        result.push_back(phoneme);
+    }
+    
+    return result;
+}
+
 void process_text_and_phonemes(const string& text, t_vowels* vowels) {
 
+    vector<vector<t_cell_rhyme>>        cells;
+    vector<t_cell_rhyme>                line_cell;
+    u_int8_t                            line_index = 0;
+
     vector<string> words = split_text(text);
-    vector<vector<t_cell_rhyme>> cells;
-    vector<t_cell_rhyme> line_cell;
-    u_int8_t line_index = 0;
 
     for (const string& word : words) {
         
         if (!ispunct(word[0]) && word[0] != '\n' && !isspace(word[0]) ) {
             string output = text_to_phonemes(word);
-            vector<string> phonemes = split_text(output);
+            vector<string> phonemes = split_phonemes(output, vowels);
+
+            for (const string& phoneme : phonemes) {
+                cout << phoneme << "\n";
+            }
 
             t_cell_rhyme cell = {word, true, phonemes, line_index};
             line_cell.push_back(cell);
@@ -110,10 +168,12 @@ void process_text_and_phonemes(const string& text, t_vowels* vowels) {
             line_index++;
         }
         else{
-            t_cell_rhyme cell = {word, false, "", line_index};
+            t_cell_rhyme cell = {word, false, {""}, line_index};
             line_cell.push_back(cell);
         }
     }
+
+
 }
 
 t_vowels* load_vowels(const string& vowels_file) {
@@ -134,8 +194,9 @@ t_vowels* load_vowels(const string& vowels_file) {
                 throw runtime_error("Invalid number of matches");
             }
             vowels->symbols.push_back(match[1]);
+            vowels->code = hash<string>{}(match[1].str() + to_string(static_cast<int>(vowels->not_found.size())));
             vowels->not_found.push_back(static_cast<bool>(stoi(match[2])));
-            array<int, 3> pos = {std::stoi(match[3]), std::stoi(match[4]), std::stoi(match[5])};
+            array<int, 3> pos = {std::stoi(match[3]), std::stoi(match[4]), std::stoi(match[5])};    
             array<int, 3> dpos = {std::stoi(match[6]), std::stoi(match[7]), std::stoi(match[8])};
             vowels->dpos.push_back(dpos);
             vowels->pos.push_back(pos);
