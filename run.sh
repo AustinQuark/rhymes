@@ -1,1 +1,1 @@
-gcc -lespeak-ng -o main main.c && ./main
+clang++ -Wall -Wextra -lespeak-ng -o phoneme_converter main_converted.cpp && ./phoneme_converter

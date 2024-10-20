@@ -20,7 +20,7 @@ struct    s_cell_rhyme{
 } typedef t_cell_rhyme;
 
 struct    s_vowels{
-    u_int32_t             code;
+    vector<u_int32_t>     code;
     vector<string>        symbols;
     vector<bool>          not_found;
     vector<array<int, 3>> pos;
@@ -93,52 +93,38 @@ vector<string> split_text(const string& text) {
 
 vector<string> split_phonemes(const string& phonemes, t_vowels* vowels) {
     vector<string> result;
-    string phones;
-    char * phonemes_ptr = (char*) phonemes.c_str();
-    size_t i = -1;
+    size_t i = 0;
     
-    while (phonemes_ptr[++i]) {
-        phones += phonemes_ptr[i];
-        
+    while (i < phonemes.size()) {
+        bool match = false;
+        size_t longest_match = 0;
+        string phone;
 
+        if (phonemes[i] == '\'') {
+            phone = "'";
+            i++;
+            result.push_back(phone);
+            continue;
+        }
 
-        bool delimiterFound = false;
-        for (const string& symbol : vowels->symbols) {
-            if (phones == symbol) {
-                result.push_back(phones);
-                phones.clear();
-                delimiterFound = true;
-                break;
-            }
-        }=======
-        if (!delimiterFound) {
-            bool foundLongestDelimiter = false;
-            string longestDelimiter;
-            
-            for (const string& symbol : vowels->symbols) {
-                if (symbol.size() > phoneme.size() && symbol.substr(0, phoneme.size()) == phoneme) {
-                    longestDelimiter = symbol;
-                    foundLongestDelimiter = true;
+        for (const auto &symbol : vowels->symbols) {
+            if (phonemes.substr(i, symbol.size()) == symbol) {
+                if (symbol.size() > longest_match) {
+                    phone = symbol;
+                    longest_match = symbol.size();
+                    match = true;
                 }
             }
-            if (foundLongestDelimiter) {
-                continue;
-            }
         }
-        if (!phoneme.empty() && delimiterFound) {
-            result.push_back(phoneme);
-            phoneme.clear();
-        } else if (c == '\'') {
-            if (!phoneme.empty() && phoneme.back() != '\'') {
-                phoneme += c;
-            }
+
+        if (match) {
+            result.push_back(phone);
+            i += longest_match;
+        } else {
+            result.push_back(string(1, phonemes[i]));
+            i++;
         }
     }
-    
-    if (!phoneme.empty()) {
-        result.push_back(phoneme);
-    }
-    
     return result;
 }
 
@@ -156,10 +142,6 @@ void process_text_and_phonemes(const string& text, t_vowels* vowels) {
             string output = text_to_phonemes(word);
             vector<string> phonemes = split_phonemes(output, vowels);
 
-            for (const string& phoneme : phonemes) {
-                cout << phoneme << "\n";
-            }
-
             t_cell_rhyme cell = {word, true, phonemes, line_index};
             line_cell.push_back(cell);
         } else if (word[0] == '\n'){
@@ -170,6 +152,27 @@ void process_text_and_phonemes(const string& text, t_vowels* vowels) {
         else{
             t_cell_rhyme cell = {word, false, {""}, line_index};
             line_cell.push_back(cell);
+        }
+    }
+    if (!line_cell.empty()) {
+        cells.push_back(line_cell);
+    }
+
+    for (const auto& line : cells) {
+        for (const auto& cell : line) {
+            if (cell.to_phonetize) {
+                cout << setw(20) << "Word: " << cell.word;
+                cout << setw(20) << "Phonemes: ";
+                for (const auto& phoneme : cell.phonemes) {
+                    cout << phoneme << "_";
+                }
+                cout << setw(20) << "Line: " << static_cast<int>(cell.line_index);
+                cout << endl;
+            } else if (!isspace(cell.word[0])) {
+                cout << setw(20) << "Word: " << cell.word;
+                cout << setw(20) << "Line: " << static_cast<int>(cell.line_index);
+                cout << endl;
+            }
         }
     }
 
@@ -194,7 +197,7 @@ t_vowels* load_vowels(const string& vowels_file) {
                 throw runtime_error("Invalid number of matches");
             }
             vowels->symbols.push_back(match[1]);
-            vowels->code = hash<string>{}(match[1].str() + to_string(static_cast<int>(vowels->not_found.size())));
+            vowels->code.push_back(hash<string>{}(match[1].str()));
             vowels->not_found.push_back(static_cast<bool>(stoi(match[2])));
             array<int, 3> pos = {std::stoi(match[3]), std::stoi(match[4]), std::stoi(match[5])};    
             array<int, 3> dpos = {std::stoi(match[6]), std::stoi(match[7]), std::stoi(match[8])};
@@ -221,6 +224,7 @@ int main() {
     t_vowels * vowels = load_vowels("./espeak-ng/docs/phonemes/vowelcharts/fr");
     cerr << "Vowels loaded: " << vowels->symbols.size() << endl;
     for (size_t i = 0; i < vowels->symbols.size(); i++) {
+        cout << setw(20) << "Code: " << hex << vowels->code[i] << dec;
         cout << setw(20) << "Symbol: " << vowels->symbols[i];
         cout << setw(20) << "Atrbt: " << vowels->not_found[i];
         cout << setw(20) << "X/Y/Z: " << vowels->pos[i][0] << ", " << vowels->pos[i][1] << ", " << vowels->pos[i][2];
@@ -228,9 +232,9 @@ int main() {
         cout << endl;
     }
 
-    string sentence = "Ce qui est créé par l’esprit est plus vivant \nque la matière.";
-
+    string sentence = "La rue assourdissante autour de moi hurlait.\nLongue, mince, en grand deuil, douleur majestueuse,\nUne femme passa, d'une main fastueuse\nSoulevant, balançant le feston et l'ourlet ;\nAgile et noble, avec sa jambe de statue.\nMoi, je buvais, crispé comme un extravagant,\nDans son oeil, ciel livide où germe l'ouragan,\nLa douceur qui fascine et le plaisir qui tue.\nUn éclair... puis la nuit ! - Fugitive beauté\nDont le regard m'a fait soudainement renaître,\nNe te verrai-je plus que dans l'éternité ?\nAilleurs, bien loin d'ici ! trop tard ! jamais peut-être !\nCar j'ignore où tu fuis, tu ne sais où je vais,\nÔ toi que j'eusse aimée, ô toi qui le savais !";
     process_text_and_phonemes(sentence, vowels);
+
 
     espeak_Terminate();
     free (vowels);
